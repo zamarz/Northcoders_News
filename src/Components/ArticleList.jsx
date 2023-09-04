@@ -5,8 +5,9 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
-const ArticleList = ({ currentArticles, setCurrentArticles }) => {
+const ArticleList = () => {
   const [currentlyLoading, setCurrentlyLoading] = useState(false);
+  const [currentArticles, setCurrentArticles] = useState([]);
 
   useEffect(() => {
     setCurrentlyLoading(true);

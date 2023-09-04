@@ -7,40 +7,18 @@ import ArticleList from "./Components/ArticleList";
 import SingleArticle from "./Components/SingleArticle";
 
 function App() {
-  const [currentArticles, setCurrentArticles] = useState([]);
-
   return (
     <>
       <div>
         <Header />
         <Navigation />
         <Routes>
+          <Route path="/articles" element={<ArticleList />} />
+          <Route path="/" element={<ArticleList />} />
+          <Route path="/articles/:article_id" element={<SingleArticle />} />
           <Route
-            path="/articles"
-            element={
-              <ArticleList
-                currentArticles={currentArticles}
-                setCurrentArticles={setCurrentArticles}
-              />
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <ArticleList
-                currentArticles={currentArticles}
-                setCurrentArticles={setCurrentArticles}
-              />
-            }
-          />
-          <Route
-            path="/articles/:article_id"
-            element={
-              <SingleArticle
-                currentArticles={currentArticles}
-                setCurrentArticles={setCurrentArticles}
-              />
-            }
+            path="/articles/:article_id/comments"
+            element={<SingleArticle />}
           />
         </Routes>
       </div>
