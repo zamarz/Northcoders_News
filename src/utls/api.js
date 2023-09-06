@@ -36,3 +36,14 @@ export const getCommentsByID = (article_id) => {
       console.log("Error in get request");
     });
 };
+
+export const patchArticleVotes = (article_id, inc_votes) => {
+  return newsSite
+    .patch(`/articles/${article_id}`, inc_votes)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(() => {
+      console.log("Error in patch request");
+    });
+};
