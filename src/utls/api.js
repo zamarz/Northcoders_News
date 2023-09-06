@@ -47,3 +47,14 @@ export const patchArticleVotes = (article_id, inc_votes) => {
       console.log("Error in patch request");
     });
 };
+
+export const postArticleComment = (article_id, data) => {
+  return newsSite
+    .post(`/articles/${article_id}/comments`, data)
+    .then(({ data }) => {
+      return data.comment;
+    })
+    .catch(() => {
+      console.error("Error in post request");
+    });
+};
