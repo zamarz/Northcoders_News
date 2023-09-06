@@ -3,7 +3,10 @@ import {
   getArticlesByID,
   getCommentsByID,
   patchArticleVotes,
+  postArticleComment,
 } from "../utls/api";
+import { UserContext } from "../contexts/Users";
+import { useContext } from "react";
 import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import CommentCard from "./CommentCard";
@@ -21,6 +24,10 @@ const SingleArticle = () => {
   const [newVotes, setNewVotes] = useState({ inc_votes: 0 });
   const [articleVotes, setArticleVotes] = useState("");
   const [show, setShow] = useState(false);
+  const [showComment, setShowComment] = useState(false);
+  const [newComment, setNewComment] = useState({ body: "", author: "" });
+  const { username } = useContext(UserContext);
+  const [disabled, setDisabled] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -51,8 +58,22 @@ const SingleArticle = () => {
 
   const handleChange = (event) => {
     const value = event.target.value;
-
     setNewVotes({ inc_votes: value });
+  };
+
+  const handleCommentChange = (event) => {
+    const value = event.target.value;
+    setNewComment({ author: username, body: value });
+  };
+
+  const handleNewComment = (event) => {
+    event.preventDefault();
+    const body = newComment;
+    postArticleComment(article_id, body).then((response) => {
+      if (response) {
+        setShowComment(true);
+      }
+    });
   };
 
   if (currentlyLoading)
@@ -94,6 +115,39 @@ const SingleArticle = () => {
         <Button type="submit">Submit votes</Button>
       </Form>
       <p>Published on {searchArticle.created_at}</p>
+      <Form onSubmit={handleNewComment}>
+        <Form.Group className="mb-3">
+          <Form.Label>Add a comment here:</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            onChange={handleCommentChange}
+            required
+            disabled={disabled}
+          />
+        </Form.Group>
+        <Button
+          type="submit"
+          disabled={disabled}
+          onClick={() => {
+            setDisabled(true);
+          }}
+        >
+          Submit comment
+        </Button>
+      </Form>
+      <Alert show={showComment} variant="success">
+        <Alert.Heading>Your comment has been posted!</Alert.Heading>
+        <p>Thanks for adding your opinion to this important topic</p>
+        <div>
+          <Button
+            onClick={() => setShowComment(false)}
+            variant="outline-success"
+          >
+            Close
+          </Button>
+        </div>
+      </Alert>
       <ul className="list-unstyled justify-content-md-center">
         {comments.map((comment) => {
           return <CommentCard key={comment.comment_id} comment={comment} />;

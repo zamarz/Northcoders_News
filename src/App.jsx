@@ -20,6 +20,10 @@ function App() {
             path="/articles/:article_id/comments"
             element={<SingleArticle />}
           />
+          <Route
+            path="/articles/:article_id/comments"
+            element={<SingleArticle />}
+          />
         </Routes>
       </div>
     </>
