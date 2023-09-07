@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
 import { getArticles } from "../utls/api";
 import ArticleCard from "./ArticleCard";
-import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
+import { useSearchParams } from "react-router-dom";
 
-const ArticleList = () => {
+const ArticleList = ({ params }) => {
   const [currentlyLoading, setCurrentlyLoading] = useState(false);
   const [currentArticles, setCurrentArticles] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const topicParams = searchParams.get("topic");
 
   useEffect(() => {
     setCurrentlyLoading(true);
-    getArticles().then((articles) => {
+    getArticles(topicParams).then((articles) => {
       setCurrentlyLoading(false);
       setCurrentArticles(articles);
     });
-  }, []);
+  }, [params, searchParams]);
 
   if (currentlyLoading)
     return (

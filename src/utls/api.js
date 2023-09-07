@@ -1,18 +1,30 @@
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 const newsSite = axios.create({
   baseURL: "https://nc-news-service-ww5y.onrender.com/api",
 });
 
-export const getArticles = () => {
-  return newsSite
-    .get("/articles")
-    .then(({ data }) => {
-      return data.articles;
-    })
-    .catch(() => {
-      console.log("Error in get request");
-    });
+export const getArticles = (topicParams) => {
+  if (topicParams === null) {
+    return newsSite
+      .get("/articles")
+      .then(({ data }) => {
+        return data.articles;
+      })
+      .catch(() => {
+        console.log("Error in get request");
+      });
+  } else {
+    return newsSite
+      .get(`/articles?topic=${topicParams}`, { params: { topicParams } })
+      .then(({ data }) => {
+        return data.articles;
+      })
+      .catch(() => {
+        console.log("Error in get topic request");
+      });
+  }
 };
 
 export const getArticlesByID = (article_id) => {
@@ -56,5 +68,16 @@ export const postArticleComment = (article_id, data) => {
     })
     .catch(() => {
       console.error("Error in post request");
+    });
+};
+
+export const getTopics = () => {
+  return newsSite
+    .get(`/topics`)
+    .then(({ data }) => {
+      return data.topics;
+    })
+    .catch(() => {
+      console.log("Error in get request");
     });
 };

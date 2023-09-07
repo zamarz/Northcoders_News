@@ -11,7 +11,7 @@ const Navigation = () => {
           <Nav.Link href="/"> Home</Nav.Link>
         </Nav>
         <Nav className="me-auto justify-content-end flex-grow-1 pe-3">
-          <Navbar.Text> View topics</Navbar.Text>
+          <Nav.Link href="/topics"> View topics</Nav.Link>
         </Nav>
         <Nav className="me-auto justify-content-end flex-grow-1 pe-3">
           <Navbar.Text> View users</Navbar.Text>

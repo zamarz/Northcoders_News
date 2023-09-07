@@ -28,6 +28,8 @@ const SingleArticle = () => {
   const [newComment, setNewComment] = useState({ body: "", author: "" });
   const { username } = useContext(UserContext);
   const [disabled, setDisabled] = useState(false);
+  const [showVote, setShowVote] = useState(false);
+  const [disabledVote, setDisabledVote] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -56,9 +58,18 @@ const SingleArticle = () => {
     });
   }, [article_id, patchArticleVotes]);
 
-  const handleChange = (event) => {
-    const value = event.target.value;
-    setNewVotes({ inc_votes: value });
+  const handleChange = () => {
+    setNewVotes({ inc_votes: 1 }).then(() => {
+      patchArticleVotes(article_id, newVotes)
+        .then(({ article }) => {
+          setArticleVotes(article.votes);
+        })
+        .catch((err) => {
+          if (err) {
+            setShow(true);
+          }
+        });
+    });
   };
 
   const handleCommentChange = (event) => {
@@ -102,17 +113,49 @@ const SingleArticle = () => {
           </Button>
         </div>
       </Alert>
+
       <Form onSubmit={handleSubmit}>
         <Form.Group as={Col} md="4">
-          <Form.Label>Change the article's votes:</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Change the votes"
-            defaultValue="0"
+          <Form.Label>Change the article's votes: </Form.Label>
+
+          <Button
             onChange={handleChange}
-          />
+            type="submit"
+            variant="success"
+            disabled={disabledVote}
+            onClick={() => {
+              setNewVotes({ inc_votes: 1 });
+              setShowVote(true);
+              setDisabledVote(true);
+            }}
+          >
+            Vote +
+          </Button>
+          <Button
+            onChange={handleChange}
+            type="submit"
+            variant="danger"
+            disabled={disabledVote}
+            onClick={() => {
+              setNewVotes({ inc_votes: -1 });
+              setShowVote(true);
+              setDisabledVote(true);
+            }}
+          >
+            Vote -
+          </Button>
+          <Alert show={showVote} variant="success">
+            <Alert.Heading>Thanks for voting!</Alert.Heading>
+            <div>
+              <Button
+                onClick={() => setShowVote(false)}
+                variant="outline-success"
+              >
+                Close
+              </Button>
+            </div>
+          </Alert>
         </Form.Group>
-        <Button type="submit">Submit votes</Button>
       </Form>
       <p>Published on {searchArticle.created_at}</p>
       <Form onSubmit={handleNewComment}>
