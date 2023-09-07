@@ -4,6 +4,7 @@ import ArticleCard from "./ArticleCard";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import { useSearchParams } from "react-router-dom";
+import SortArticles from "./Sort_Articles";
 
 const ArticleList = ({ params }) => {
   const [currentlyLoading, setCurrentlyLoading] = useState(false);
@@ -11,10 +12,13 @@ const ArticleList = ({ params }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const topicParams = searchParams.get("topic");
-
+  const sortParams = searchParams.get("sort_by");
+  const orderParams = searchParams.get("order");
+  console.log(searchParams);
+  console.log(orderParams);
   useEffect(() => {
     setCurrentlyLoading(true);
-    getArticles(topicParams).then((articles) => {
+    getArticles(topicParams, sortParams, orderParams).then((articles) => {
       setCurrentlyLoading(false);
       setCurrentArticles(articles);
     });
@@ -31,6 +35,7 @@ const ArticleList = ({ params }) => {
 
   return (
     <div>
+      <SortArticles />
       <ul className="list-unstyled justify-content-md-center">
         <Row md={4}>
           {currentArticles.map((currentArticle) => {

@@ -5,8 +5,8 @@ const newsSite = axios.create({
   baseURL: "https://nc-news-service-ww5y.onrender.com/api",
 });
 
-export const getArticles = (topicParams) => {
-  if (topicParams === null) {
+export const getArticles = (topicParams, sortParams, orderParams) => {
+  if (topicParams === null && sortParams === null) {
     return newsSite
       .get("/articles")
       .then(({ data }) => {
@@ -15,7 +15,7 @@ export const getArticles = (topicParams) => {
       .catch(() => {
         console.log("Error in get request");
       });
-  } else {
+  } else if (topicParams) {
     return newsSite
       .get(`/articles?topic=${topicParams}`, { params: { topicParams } })
       .then(({ data }) => {
@@ -23,6 +23,16 @@ export const getArticles = (topicParams) => {
       })
       .catch(() => {
         console.log("Error in get topic request");
+      });
+  } else if (sortParams) {
+    console.log(sortParams, "in api if");
+    return newsSite
+      .get(`/articles?sort_by=${sortParams}&order=${orderParams}`)
+      .then(({ data }) => {
+        return data.articles;
+      })
+      .catch(() => {
+        console.log("Error in get sort by request");
       });
   }
 };
