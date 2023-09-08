@@ -5,25 +5,29 @@ import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import { useSearchParams } from "react-router-dom";
 import SortArticles from "./Sort_Articles";
+import ErrorPage from "./ErrorPage";
 
 const ArticleList = ({ params }) => {
   const [currentlyLoading, setCurrentlyLoading] = useState(false);
   const [currentArticles, setCurrentArticles] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [error, setError] = useState(null);
 
   const topicParams = searchParams.get("topic");
   const sortParams = searchParams.get("sort_by");
   const orderParams = searchParams.get("order");
-  console.log(searchParams);
-  console.log(orderParams);
-  useEffect(() => {
-    setCurrentlyLoading(true);
-    getArticles(topicParams, sortParams, orderParams).then((articles) => {
-      setCurrentlyLoading(false);
-      setCurrentArticles(articles);
-    });
-  }, [params, searchParams]);
 
+  useEffect(() => {
+    // setCurrentlyLoading(true);
+    getArticles(topicParams, sortParams, orderParams)
+      .then((articles) => {
+        setCurrentlyLoading(false);
+        setCurrentArticles(articles);
+      })
+      .catch((err) => {
+        setError({ err });
+      });
+  }, [params, searchParams]);
   if (currentlyLoading)
     return (
       <Spinner animation="border" role="status">
@@ -32,6 +36,9 @@ const ArticleList = ({ params }) => {
         </span>
       </Spinner>
     );
+  if (error) {
+    return <ErrorPage error={error} />;
+  }
 
   return (
     <div>

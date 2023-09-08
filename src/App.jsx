@@ -5,8 +5,14 @@ import { Route, Routes } from "react-router-dom";
 import ArticleList from "./Components/ArticleList";
 import SingleArticle from "./Components/SingleArticle";
 import TopicList from "./Components/TopicList";
+import ErrorPage from "./Components/ErrorPage";
+import { useState } from "react";
 
 function App() {
+  const [error, setError] = useState({
+    err: { message: "It looks like this page doesn't exist" },
+  });
+
   return (
     <>
       <div>
@@ -22,6 +28,7 @@ function App() {
             element={<SingleArticle />}
           />
           <Route path="/topics" element={<TopicList />} />
+          <Route path="*" element={<ErrorPage error={error} />} />
         </Routes>
       </div>
     </>

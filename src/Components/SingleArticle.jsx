@@ -15,6 +15,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import ErrorPage from "./ErrorPage";
 
 const SingleArticle = () => {
   const { article_id } = useParams();
@@ -30,6 +31,8 @@ const SingleArticle = () => {
   const [disabled, setDisabled] = useState(false);
   const [showVote, setShowVote] = useState(false);
   const [disabledVote, setDisabledVote] = useState(false);
+  const [error, setError] = useState(null);
+  const [validated, setValidated] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -45,17 +48,25 @@ const SingleArticle = () => {
   };
 
   useEffect(() => {
-    setCurrentlyLoading(true);
-    getArticlesByID(article_id).then((article) => {
-      setCurrentlyLoading(false);
-      setArticle(article);
-      setArticleVotes(article.votes);
-    });
-    getCommentsByID(article_id).then((iDComments) => {
-      setCurrentlyLoading(false);
+    // setCurrentlyLoading(true);
+    getArticlesByID(article_id)
+      .then((article) => {
+        setCurrentlyLoading(false);
+        setArticle(article);
+        setArticleVotes(article.votes);
+      })
+      .catch((err) => {
+        setError({ err });
+      });
+    getCommentsByID(article_id)
+      .then((iDComments) => {
+        setCurrentlyLoading(false);
 
-      setComments(iDComments);
-    });
+        setComments(iDComments);
+      })
+      .catch((err) => {
+        setError({ err });
+      });
   }, [article_id, patchArticleVotes]);
 
   const handleChange = () => {
@@ -79,12 +90,20 @@ const SingleArticle = () => {
 
   const handleNewComment = (event) => {
     event.preventDefault();
+    if (!newComment.length > 0) {
+    }
+    setValidated(true);
     const body = newComment;
     postArticleComment(article_id, body).then((response) => {
       if (response) {
         setShowComment(true);
       }
     });
+  };
+
+  const handleCommentClick = (event) => {
+    event.preventDefault();
+    setDisabled(true);
   };
 
   if (currentlyLoading)
@@ -95,6 +114,10 @@ const SingleArticle = () => {
         </span>
       </Spinner>
     );
+
+  if (error) {
+    return <ErrorPage error={error} />;
+  }
 
   return (
     <Container>
@@ -158,7 +181,7 @@ const SingleArticle = () => {
         </Form.Group>
       </Form>
       <p>Published on {searchArticle.created_at}</p>
-      <Form onSubmit={handleNewComment}>
+      <Form noValidate validated={validated} onSubmit={handleNewComment}>
         <Form.Group className="mb-3">
           <Form.Label>Add a comment here:</Form.Label>
           <Form.Control
@@ -168,12 +191,16 @@ const SingleArticle = () => {
             required
             disabled={disabled}
           />
+
+          <Form.Control.Feedback type="invalid">
+            Please enter a comment
+          </Form.Control.Feedback>
         </Form.Group>
         <Button
           type="submit"
           disabled={disabled}
           onClick={() => {
-            setDisabled(true);
+            handleCommentClick();
           }}
         >
           Submit comment
