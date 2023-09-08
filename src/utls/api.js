@@ -81,6 +81,12 @@ export const postArticleComment = (article_id, data) => {
     });
 };
 
+export const deleteArticleComment = (comment_id) => {
+  return newsSite.delete(`/comments/${comment_id}`).catch((err) => {
+    console.log(err);
+  });
+};
+
 export const getTopics = () => {
   return newsSite
     .get(`/topics`)
