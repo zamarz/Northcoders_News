@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
 
 const newsSite = axios.create({
   baseURL: "https://nc-news-service-ww5y.onrender.com/api",
@@ -12,18 +11,23 @@ export const getArticles = (topicParams, sortParams, orderParams) => {
       .then(({ data }) => {
         return data.articles;
       })
-      .catch(() => {
-        console.log("Error in get request");
+      .catch(({ err }) => {
+        return err.data;
       });
   } else if (topicParams) {
     return newsSite
       .get(`/articles?topic=${topicParams}`, { params: { topicParams } })
       .then(({ data }) => {
         return data.articles;
-      })
-      .catch(() => {
-        console.log("Error in get topic request");
       });
+    // .catch((err) => {
+    //   console.log(err.response);
+
+    //   // console.log(err.response.data);
+
+    //   // console.log(err.response.headers);
+    //   // console.log(err.response.status);
+    // });
   } else if (sortParams) {
     console.log(sortParams, "in api if");
     return newsSite
@@ -31,32 +35,28 @@ export const getArticles = (topicParams, sortParams, orderParams) => {
       .then(({ data }) => {
         return data.articles;
       })
-      .catch(() => {
-        console.log("Error in get sort by request");
+      .catch((err) => {
+        console.log(err);
       });
   }
 };
 
 export const getArticlesByID = (article_id) => {
-  return newsSite
-    .get(`/articles/${article_id}`)
-    .then(({ data }) => {
-      return data.article;
-    })
-    .catch(() => {
-      console.log("Error in get request");
-    });
+  return newsSite.get(`/articles/${article_id}`).then(({ data }) => {
+    return data.article;
+  });
+  // .catch((err) => {
+  //   console.log(err);
+  // });
 };
 
 export const getCommentsByID = (article_id) => {
-  return newsSite
-    .get(`/articles/${article_id}/comments`)
-    .then(({ data }) => {
-      return data.comments;
-    })
-    .catch(() => {
-      console.log("Error in get request");
-    });
+  return newsSite.get(`/articles/${article_id}/comments`).then(({ data }) => {
+    return data.comments;
+  });
+  // .catch((err) => {
+  //   console.log(err);
+  // });
 };
 
 export const patchArticleVotes = (article_id, inc_votes) => {
@@ -65,8 +65,8 @@ export const patchArticleVotes = (article_id, inc_votes) => {
     .then(({ data }) => {
       return data;
     })
-    .catch(() => {
-      console.log("Error in patch request");
+    .catch((err) => {
+      console.log(err);
     });
 };
 
@@ -76,8 +76,8 @@ export const postArticleComment = (article_id, data) => {
     .then(({ data }) => {
       return data.comment;
     })
-    .catch(() => {
-      console.error("Error in post request");
+    .catch((err) => {
+      console.error(err);
     });
 };
 
@@ -93,7 +93,7 @@ export const getTopics = () => {
     .then(({ data }) => {
       return data.topics;
     })
-    .catch(() => {
-      console.log("Error in get request");
+    .catch((err) => {
+      console.log(err);
     });
 };
