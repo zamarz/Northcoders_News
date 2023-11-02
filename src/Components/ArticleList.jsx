@@ -18,7 +18,7 @@ const ArticleList = ({ params }) => {
   const orderParams = searchParams.get("order");
 
   useEffect(() => {
-    // setCurrentlyLoading(true);
+    setCurrentlyLoading(true);
     getArticles(topicParams, sortParams, orderParams)
       .then((articles) => {
         setCurrentlyLoading(false);
@@ -30,11 +30,13 @@ const ArticleList = ({ params }) => {
   }, [params, searchParams]);
   if (currentlyLoading)
     return (
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">
-          We're currently loading your articles
-        </span>
-      </Spinner>
+      <div>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">
+            We're currently loading your articles
+          </span>
+        </Spinner>
+      </div>
     );
   if (error) {
     return <ErrorPage error={error} />;
